@@ -3,6 +3,11 @@ const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const PORT = 5005;
 
+
+// setup CORS
+const cors = require("cors");
+
+
 // STATIC DATA
 // Devs Team - Import the provided files with JSON data of students and cohorts here:
 // ...
@@ -15,6 +20,22 @@ const app = express();
 // MIDDLEWARE
 // Research Team - Set up CORS middleware here:
 // ...
+
+// Use the cors middleware without any options to allow 
+// requests from any IP address and domain.
+// app.use(cors());
+
+// Use the CORS middleware with options to allow requests
+// from specific IP addresses and domains.
+app.use(
+  cors({
+    origin: [
+      'http://localhost:5173', 
+      'http://example.com'
+    ], // Add the URLs of allowed origins to this array
+  })
+);
+
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.static("public"));
@@ -29,6 +50,15 @@ app.get("/docs", (req, res) => {
   res.sendFile(__dirname + "/views/docs.html");
 });
 
+
+app.get("/api/cohorts", (req, res) => {
+  res.sendFile(__dirname + "/data/cohorts.json");
+});
+
+
+app.get("/api/students", (req, res) => {
+  res.sendFile(__dirname + "/data/students.json");
+}); 
 
 // START SERVER
 app.listen(PORT, () => {
